@@ -1,11 +1,13 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const OPENAI_API_KEY = "1234567redjksandfjkdfsasdf234";
 
+app.use(cors());
 app.use(express.json());
 
 app.post('/openai', async (req, res) => {
@@ -37,10 +39,13 @@ app.post('/openai', async (req, res) => {
         const data = await response.json();
 
         if (!response.ok) {
+            console.log("There is a problem with the response.");
             return res.status(response.status).json({ error: data });
         }
 
         res.json({ answer: data.choices[0].text.trim() });
+        console.log("Done Successfully.");
+
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: error.message ?? error.toString() });
